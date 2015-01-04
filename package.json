@@ -1,0 +1,42 @@
+{
+  "name": "thinker",
+  "description": "A RethinkDB management tool",
+  "version": "0.1.0",
+  "homepage": "https://github.com/internalfx/thinker/thinker",
+  "author": {
+    "name": "InternalFX",
+    "url": "https://github.com/internalfx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/internalfx/thinker/thinker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/internalfx/thinker/thinker/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/internalfx/thinker/thinker/blob/master/LICENSE-MIT"
+    }
+  ],
+  "keywords": [
+    "cli",
+    "command line"
+  ],
+  "preferGlobal": true,
+  "bin": {
+    "thinker": "./bin/thinker"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.8"
+  },
+  "scripts": {
+    "test": "mocha -R test"
+  },
+  "dependencies": {
+    "minimist": "~0.0.8",
+    "verbalize": "~0.1.1"
+  }
+}
