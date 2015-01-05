@@ -25,4 +25,4 @@ Options:
 ````
 
 ###How do I get it?
-`npm install thinker`
+`npm install -g thinker`
