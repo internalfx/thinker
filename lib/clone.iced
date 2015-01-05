@@ -5,8 +5,6 @@ async = require('async')
 perfNow = require("performance-now")
 inquirer = require("inquirer")
 
-VERSION = "0.1.0"
-
 HELPTEXT = """
 
               Thinker Clone

@@ -3,8 +3,6 @@ _ = require('lodash')
 r = require('rethinkdb')
 perfNow = require("performance-now")
 
-VERSION = "0.1.0"
-
 HELPTEXT = """
 
               Thinker #{VERSION}

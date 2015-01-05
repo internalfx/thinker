@@ -1,13 +1,11 @@
 (function() {
-  var HELPTEXT, VERSION, perfNow, r, _;
+  var HELPTEXT, perfNow, r, _;
 
   _ = require('lodash');
 
   r = require('rethinkdb');
 
   perfNow = require("performance-now");
-
-  VERSION = "0.1.0";
 
   HELPTEXT = "\nThinker " + VERSION + "\n==============================\n\nA RethinkDB command line tool.\n\nCommands:\n  thinker clone           Clone a database locally or between remote hosts.\n  thinker -h | --help     Show this screen.\n";
 

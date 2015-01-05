@@ -1,5 +1,5 @@
 (function() {
-  var HELPTEXT, VERSION, async, iced, inquirer, perfNow, r, _, __iced_k, __iced_k_noop;
+  var HELPTEXT, async, iced, inquirer, perfNow, r, _, __iced_k, __iced_k_noop;
 
   iced = require('iced-runtime');
   __iced_k = __iced_k_noop = function() {};
@@ -14,9 +14,7 @@
 
   inquirer = require("inquirer");
 
-  VERSION = "0.1.0";
-
-  HELPTEXT = "\nThinker Clone\n==============================\n\nClone a RethinkDB database on the same host or between remote hosts.\n\nUsage:\n  thinker [options]\n  thinker --sh host[:port] --th host[:port] --sd dbName --td newDbName\n  thinker -h | --help\n\nOptions:\n  --sh, --sHost=<host[:port]>     Source host, defaults to 'localhost:21015'\n  --th, --tHost=<host[:port]>     Target host, defaults to 'localhost:21015'\n  --sd, --sourceDB=<dbName>       Source database\n  --td, --targetDB=<dbName>       Target database\n";
+  HELPTEXT = "\nThinker Clone\n==============================\n\nClone a RethinkDB database on the same host or between remote hosts.\n\nUsage:\n  thinker clone [options]\n  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName\n  thinker clone -h | --help\n\nOptions:\n  --sh, --sHost=<host[:port]>     Source host, defaults to 'localhost:21015'\n  --th, --tHost=<host[:port]>     Target host, defaults to 'localhost:21015'\n  --sd, --sourceDB=<dbName>       Source database\n  --td, --targetDB=<dbName>       Target database\n";
 
   exports.run = function(argv, done) {
     var answer, check_queue, completed_tables, concurrency, conn, cursors, dbList, directClone, err, insert_queue, last_records_processed, perf_stat, queue_ready, records_processed, result, sHost, sourceConn, sourceDB, sourceHost, sourcePort, sourceTableList, status_interval, tHost, tableConns, targetConn, targetDB, targetHost, targetPort, tname, total_records, ___iced_passed_deferral, __iced_deferrals, __iced_k;
@@ -36,6 +34,7 @@
     }
     if (!((sourceDB != null) && (targetDB != null))) {
       console.log("Source and target databases are required!");
+      console.log(HELPTEXT);
       return null;
     }
     if (("" + sourceHost + ":" + sourcePort) === ("" + targetHost + ":" + targetPort) && sourceDB === targetDB) {
@@ -62,7 +61,7 @@
               return answer = arguments[0];
             };
           })(),
-          lineno: 63
+          lineno: 62
         }));
         __iced_deferrals._fulfill();
       });
@@ -91,7 +90,7 @@
                   return conn = arguments[1];
                 };
               })(),
-              lineno: 73
+              lineno: 72
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -108,7 +107,7 @@
                     return dbList = arguments[1];
                   };
                 })(),
-                lineno: 76
+                lineno: 75
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -128,7 +127,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 79
+                      lineno: 78
                     }));
                     __iced_deferrals._fulfill();
                   })(function() {
@@ -152,7 +151,7 @@
                         return result = arguments[1];
                       };
                     })(),
-                    lineno: 82
+                    lineno: 81
                   }));
                   __iced_deferrals._fulfill();
                 })(function() {
@@ -169,7 +168,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 83
+                      lineno: 82
                     }));
                     __iced_deferrals._fulfill();
                   })(function() {
@@ -186,7 +185,7 @@
                             return sourceTableList = arguments[1];
                           };
                         })(),
-                        lineno: 85
+                        lineno: 84
                       }));
                       __iced_deferrals._fulfill();
                     })(function() {
@@ -219,7 +218,7 @@
                                     return localconn = arguments[1];
                                   };
                                 })(),
-                                lineno: 91
+                                lineno: 90
                               }));
                               __iced_deferrals._fulfill();
                             });
@@ -237,7 +236,7 @@
                                       return result = arguments[1];
                                     };
                                   })(),
-                                  lineno: 92
+                                  lineno: 91
                                 }));
                                 __iced_deferrals._fulfill();
                               })(function() {
@@ -253,7 +252,7 @@
                                         return result = arguments[1];
                                       };
                                     })(),
-                                    lineno: 93
+                                    lineno: 92
                                   }));
                                   __iced_deferrals._fulfill();
                                 })(function() {
@@ -267,7 +266,7 @@
                         for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                           tname = sourceTableList[_i];
                           _fn(__iced_deferrals.defer({
-                            lineno: 96
+                            lineno: 95
                           }));
                         }
                         __iced_deferrals._fulfill();
@@ -301,7 +300,7 @@
                                       return localconn = arguments[1];
                                     };
                                   })(),
-                                  lineno: 103
+                                  lineno: 102
                                 }));
                                 __iced_deferrals._fulfill();
                               });
@@ -319,7 +318,7 @@
                                         return sourceIndexes = arguments[1];
                                       };
                                     })(),
-                                    lineno: 104
+                                    lineno: 103
                                   }));
                                   __iced_deferrals._fulfill();
                                 })(function() {
@@ -360,7 +359,7 @@
                                                 return index_obj = arguments[1];
                                               };
                                             })(),
-                                            lineno: 107
+                                            lineno: 106
                                           }));
                                           __iced_deferrals._fulfill();
                                         })(function() {
@@ -380,7 +379,7 @@
                                                   return result = arguments[1];
                                                 };
                                               })(),
-                                              lineno: 112
+                                              lineno: 111
                                             }));
                                             __iced_deferrals._fulfill();
                                           })(_next);
@@ -401,7 +400,7 @@
                                             return result = arguments[1];
                                           };
                                         })(),
-                                        lineno: 114
+                                        lineno: 113
                                       }));
                                       __iced_deferrals._fulfill();
                                     })(function() {
@@ -416,7 +415,7 @@
                           for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                             tname = sourceTableList[_i];
                             _fn(__iced_deferrals.defer({
-                              lineno: 117
+                              lineno: 116
                             }));
                           }
                           __iced_deferrals._fulfill();
@@ -450,7 +449,7 @@
                                         return localconn = arguments[1];
                                       };
                                     })(),
-                                    lineno: 124
+                                    lineno: 123
                                   }));
                                   __iced_deferrals._fulfill();
                                 });
@@ -468,7 +467,7 @@
                                           return sourceIndexes = arguments[1];
                                         };
                                       })(),
-                                      lineno: 128
+                                      lineno: 127
                                     }));
                                     __iced_deferrals._fulfill();
                                   })(function() {
@@ -484,7 +483,7 @@
                                             return result = arguments[1];
                                           };
                                         })(),
-                                        lineno: 130
+                                        lineno: 129
                                       }));
                                       __iced_deferrals._fulfill();
                                     })(function() {
@@ -498,7 +497,7 @@
                             for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                               tname = sourceTableList[_i];
                               _fn(__iced_deferrals.defer({
-                                lineno: 133
+                                lineno: 132
                               }));
                             }
                             __iced_deferrals._fulfill();
@@ -517,7 +516,7 @@
                                     return result = arguments[1];
                                   };
                                 })(),
-                                lineno: 136
+                                lineno: 135
                               }));
                               __iced_deferrals._fulfill();
                             })(__iced_k);
@@ -548,7 +547,7 @@
                   return sourceConn = arguments[1];
                 };
               })(),
-              lineno: 141
+              lineno: 140
             }));
             r.connect({
               host: targetHost,
@@ -560,7 +559,7 @@
                   return targetConn = arguments[1];
                 };
               })(),
-              lineno: 142
+              lineno: 141
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -577,7 +576,7 @@
                     return dbList = arguments[1];
                   };
                 })(),
-                lineno: 145
+                lineno: 144
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -597,7 +596,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 149
+                      lineno: 148
                     }));
                     targetConn.close(__iced_deferrals.defer({
                       assign_fn: (function() {
@@ -606,7 +605,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 150
+                      lineno: 149
                     }));
                     __iced_deferrals._fulfill();
                   })(function() {
@@ -630,7 +629,7 @@
                         return result = arguments[1];
                       };
                     })(),
-                    lineno: 153
+                    lineno: 152
                   }));
                   __iced_deferrals._fulfill();
                 })(function() {
@@ -647,7 +646,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 154
+                      lineno: 153
                     }));
                     __iced_deferrals._fulfill();
                   })(function() {
@@ -664,7 +663,7 @@
                             return sourceTableList = arguments[1];
                           };
                         })(),
-                        lineno: 156
+                        lineno: 155
                       }));
                       __iced_deferrals._fulfill();
                     })(function() {
@@ -681,7 +680,7 @@
                               return result = arguments[1];
                             };
                           })(),
-                          lineno: 159
+                          lineno: 158
                         }));
                         targetConn.close(__iced_deferrals.defer({
                           assign_fn: (function() {
@@ -690,7 +689,7 @@
                               return result = arguments[1];
                             };
                           })(),
-                          lineno: 160
+                          lineno: 159
                         }));
                         __iced_deferrals._fulfill();
                       })(function() {
@@ -723,7 +722,7 @@
                                       return localconn = arguments[1];
                                     };
                                   })(),
-                                  lineno: 167
+                                  lineno: 166
                                 }));
                                 __iced_deferrals._fulfill();
                               });
@@ -741,7 +740,7 @@
                                         return result = arguments[1];
                                       };
                                     })(),
-                                    lineno: 168
+                                    lineno: 167
                                   }));
                                   __iced_deferrals._fulfill();
                                 })(function() {
@@ -757,7 +756,7 @@
                                           return result = arguments[1];
                                         };
                                       })(),
-                                      lineno: 169
+                                      lineno: 168
                                     }));
                                     __iced_deferrals._fulfill();
                                   })(function() {
@@ -771,7 +770,7 @@
                           for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                             tname = sourceTableList[_i];
                             _fn(__iced_deferrals.defer({
-                              lineno: 172
+                              lineno: 171
                             }));
                           }
                           __iced_deferrals._fulfill();
@@ -805,7 +804,7 @@
                                         return sourcelocalconn = arguments[1];
                                       };
                                     })(),
-                                    lineno: 179
+                                    lineno: 178
                                   }));
                                   __iced_deferrals._fulfill();
                                 });
@@ -826,7 +825,7 @@
                                           return targetlocalconn = arguments[1];
                                         };
                                       })(),
-                                      lineno: 180
+                                      lineno: 179
                                     }));
                                     __iced_deferrals._fulfill();
                                   })(function() {
@@ -842,7 +841,7 @@
                                             return sourceIndexes = arguments[1];
                                           };
                                         })(),
-                                        lineno: 181
+                                        lineno: 180
                                       }));
                                       __iced_deferrals._fulfill();
                                     })(function() {
@@ -883,7 +882,7 @@
                                                     return index_obj = arguments[1];
                                                   };
                                                 })(),
-                                                lineno: 184
+                                                lineno: 183
                                               }));
                                               __iced_deferrals._fulfill();
                                             })(function() {
@@ -903,7 +902,7 @@
                                                       return result = arguments[1];
                                                     };
                                                   })(),
-                                                  lineno: 189
+                                                  lineno: 188
                                                 }));
                                                 __iced_deferrals._fulfill();
                                               })(_next);
@@ -924,7 +923,7 @@
                                                 return result = arguments[1];
                                               };
                                             })(),
-                                            lineno: 192
+                                            lineno: 191
                                           }));
                                           targetlocalconn.close(__iced_deferrals.defer({
                                             assign_fn: (function() {
@@ -933,7 +932,7 @@
                                                 return result = arguments[1];
                                               };
                                             })(),
-                                            lineno: 193
+                                            lineno: 192
                                           }));
                                           __iced_deferrals._fulfill();
                                         })(function() {
@@ -949,7 +948,7 @@
                             for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                               tname = sourceTableList[_i];
                               _fn(__iced_deferrals.defer({
-                                lineno: 196
+                                lineno: 195
                               }));
                             }
                             __iced_deferrals._fulfill();
@@ -993,7 +992,7 @@
                                           return localconn = arguments[1];
                                         };
                                       })(),
-                                      lineno: 215
+                                      lineno: 214
                                     }));
                                     __iced_deferrals._fulfill();
                                   });
@@ -1011,7 +1010,7 @@
                                             return size = arguments[1];
                                           };
                                         })(),
-                                        lineno: 216
+                                        lineno: 215
                                       }));
                                       __iced_deferrals._fulfill();
                                     })(function() {
@@ -1028,7 +1027,7 @@
                                               return result = arguments[1];
                                             };
                                           })(),
-                                          lineno: 218
+                                          lineno: 217
                                         }));
                                         __iced_deferrals._fulfill();
                                       })(function() {
@@ -1041,7 +1040,7 @@
                               for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                                 tname = sourceTableList[_i];
                                 _fn(__iced_deferrals.defer({
-                                  lineno: 220
+                                  lineno: 219
                                 }));
                               }
                               __iced_deferrals._fulfill();
@@ -1067,7 +1066,7 @@
                                           return localconn = arguments[1];
                                         };
                                       })(),
-                                      lineno: 227
+                                      lineno: 226
                                     }));
                                     __iced_deferrals._fulfill();
                                   });
@@ -1087,7 +1086,7 @@
                                             return result = arguments[1];
                                           };
                                         })(),
-                                        lineno: 228
+                                        lineno: 227
                                       }));
                                       __iced_deferrals._fulfill();
                                     })(function() {
@@ -1103,7 +1102,7 @@
                                               return result = arguments[1];
                                             };
                                           })(),
-                                          lineno: 229
+                                          lineno: 228
                                         }));
                                         __iced_deferrals._fulfill();
                                       })(function() {
@@ -1130,10 +1129,67 @@
                               };
                               setTimeout(check_queue, status_interval);
                               insert_queue.drain = function() {
+                                var err, key, result, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                                __iced_k = __iced_k_noop;
+                                ___iced_passed_deferral1 = iced.findDeferral(arguments);
                                 sourceTableList = _.uniq(sourceTableList);
                                 if (completed_tables.length >= sourceTableList.length) {
-                                  console.log(_.keys(tableConns));
-                                  return done();
+                                  (function(_this) {
+                                    return (function(__iced_k) {
+                                      var _i, _len, _ref, _results, _while;
+                                      _ref = _.keys(tableConns);
+                                      _len = _ref.length;
+                                      _i = 0;
+                                      _results = [];
+                                      _while = function(__iced_k) {
+                                        var _break, _continue, _next;
+                                        _break = function() {
+                                          return __iced_k(_results);
+                                        };
+                                        _continue = function() {
+                                          return iced.trampoline(function() {
+                                            ++_i;
+                                            return _while(__iced_k);
+                                          });
+                                        };
+                                        _next = function(__iced_next_arg) {
+                                          _results.push(__iced_next_arg);
+                                          return _continue();
+                                        };
+                                        if (!(_i < _len)) {
+                                          return _break();
+                                        } else {
+                                          key = _ref[_i];
+                                          (function(__iced_k) {
+                                            __iced_deferrals = new iced.Deferrals(__iced_k, {
+                                              parent: ___iced_passed_deferral1,
+                                              filename: "./lib/clone.iced",
+                                              funcname: "drain"
+                                            });
+                                            tableConns[key].close(__iced_deferrals.defer({
+                                              assign_fn: (function() {
+                                                return function() {
+                                                  err = arguments[0];
+                                                  return result = arguments[1];
+                                                };
+                                              })(),
+                                              lineno: 250
+                                            }));
+                                            __iced_deferrals._fulfill();
+                                          })(_next);
+                                        }
+                                      };
+                                      _while(__iced_k);
+                                    });
+                                  })(this)((function(_this) {
+                                    return function() {
+                                      console.log("\n");
+                                      console.log("DONE!");
+                                      return __iced_k(done());
+                                    };
+                                  })(this));
+                                } else {
+                                  return __iced_k();
                                 }
                               };
                               insert_queue.suturate = function() {
@@ -1168,7 +1224,7 @@
                                             return __slot_1[__slot_2] = arguments[1];
                                           };
                                         })(tableConns, table),
-                                        lineno: 260
+                                        lineno: 263
                                       }));
                                       __iced_deferrals._fulfill();
                                     });
@@ -1186,7 +1242,7 @@
                                               return __slot_1[__slot_2] = arguments[1];
                                             };
                                           })(cursors, table),
-                                          lineno: 261
+                                          lineno: 264
                                         }));
                                         __iced_deferrals._fulfill();
                                       })(function() {
@@ -1198,7 +1254,7 @@
                                 for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                                   tname = sourceTableList[_i];
                                   _fn(__iced_deferrals.defer({
-                                    lineno: 263
+                                    lineno: 266
                                   }));
                                 }
                                 __iced_deferrals._fulfill();
@@ -1271,7 +1327,7 @@
                                                           return row = arguments[1];
                                                         };
                                                       })(),
-                                                      lineno: 275
+                                                      lineno: 278
                                                     }));
                                                     __iced_deferrals._fulfill();
                                                   })(function() {
@@ -1309,7 +1365,7 @@ _break()
                                   for (_i = 0, _len = sourceTableList.length; _i < _len; _i++) {
                                     tname = sourceTableList[_i];
                                     _fn(__iced_deferrals.defer({
-                                      lineno: 286
+                                      lineno: 289
                                     }));
                                   }
                                   __iced_deferrals._fulfill();
