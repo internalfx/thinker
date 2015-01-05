@@ -15,9 +15,9 @@ HELPTEXT = """
               Clone a RethinkDB database on the same host or between remote hosts.
 
               Usage:
-                thinker [options]
-                thinker --sh host[:port] --th host[:port] --sd dbName --td newDbName
-                thinker -h | --help
+                thinker clone [options]
+                thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
+                thinker clone -h | --help
 
               Options:
                 --sh, --sHost=<host[:port]>     Source host, defaults to 'localhost:21015'
