@@ -30,13 +30,21 @@
   },
   "main": "index.js",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "scripts": {
     "test": "mocha -R test"
   },
   "dependencies": {
-    "minimist": "~0.0.8",
-    "verbalize": "~0.1.1"
+    "minimist": "~1.1.0",
+    "verbalize": "~0.1.1",
+    "rethinkdb": "~1.15.0",
+    "lodash": "~2.4.0",
+    "async": "~0.9.0",
+    "inquirer": "~0.8.0",
+    "iced-runtime": "~1.0.2"
+  },
+  "devDependencies": {
+    "grunt-iced-coffee": "~0.7.0"
   }
 }

@@ -1,4 +1,4 @@
-thinker
+Thinker
 =======
 
 A RethinkDB management tool.
