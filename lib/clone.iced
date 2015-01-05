@@ -45,6 +45,7 @@ exports.run = (argv, done) ->
 
   unless sourceDB? and targetDB?
     console.log "Source and target databases are required!"
+    console.log HELPTEXT
     return null
 
   if "#{sourceHost}:#{sourcePort}" is "#{targetHost}:#{targetPort}" and sourceDB is targetDB
@@ -247,7 +248,11 @@ exports.run = (argv, done) ->
     insert_queue.drain = ->
       sourceTableList = _.uniq(sourceTableList)
       if completed_tables.length >= sourceTableList.length
-        console.log _.keys(tableConns)
+        #close all cursor connections
+        for key in _.keys(tableConns)
+          await tableConns[key].close(defer(err, result))
+        console.log "\n"
+        console.log "DONE!"
         done()
 
     insert_queue.suturate = ->
