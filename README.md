@@ -3,7 +3,7 @@ Thinker
 
 ###A RethinkDB management tool.
 
-A command line tool to ease development, and administration.
+A command line tool to ease development and administration.
 
 ###Why?
 I have a production app using RethinkDB, and I wanted an easy way to clone the database to another server for development.
