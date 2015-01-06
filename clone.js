@@ -14,14 +14,14 @@
 
   inquirer = require("inquirer");
 
-  HELPTEXT = "\nThinker Clone\n==============================\n\nClone a RethinkDB database on the same host or between remote hosts.\n\nUsage:\n  thinker clone [options]\n  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName\n  thinker clone -h | --help\n\nOptions:\n  --sh, --sHost=<host[:port]>     Source host, defaults to 'localhost:21015'\n  --th, --tHost=<host[:port]>     Target host, defaults to 'localhost:21015'\n  --sd, --sourceDB=<dbName>       Source database\n  --td, --targetDB=<dbName>       Target database\n";
+  HELPTEXT = "\nThinker Clone\n==============================\n\nClone a RethinkDB database on the same host or between remote hosts.\n\nUsage:\n  thinker clone [options]\n  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName\n  thinker clone -h | --help\n\nOptions:\n  --sh, --sourceHost=<host[:port]>  Source host, defaults to 'localhost:21015'\n  --th, --targetHost=<host[:port]>  Target host, defaults to 'localhost:21015'\n  --sd, --sourceDB=<dbName>         Source database\n  --td, --targetDB=<dbName>         Target database\n";
 
   exports.run = function(argv, done) {
     var answer, check_queue, completed_tables, concurrency, conn, cursors, dbList, directClone, err, insert_queue, last_records_processed, perf_stat, queue_ready, records_processed, result, sHost, sourceConn, sourceDB, sourceHost, sourcePort, sourceTableList, status_interval, tHost, tableConns, targetConn, targetDB, targetHost, targetPort, tname, total_records, ___iced_passed_deferral, __iced_deferrals, __iced_k;
     __iced_k = __iced_k_noop;
     ___iced_passed_deferral = iced.findDeferral(arguments);
-    sHost = argv.sh != null ? argv.sh : argv.sh = argv.sHost ? argv.sHost : 'localhost:28015';
-    tHost = argv.th != null ? argv.th : argv.th = argv.tHost ? argv.tHost : 'localhost:28015';
+    sHost = argv.sh != null ? argv.sh : argv.sh = argv.sourceHost ? argv.sourceHost : 'localhost:28015';
+    tHost = argv.th != null ? argv.th : argv.th = argv.targetHost ? argv.targetHost : 'localhost:28015';
     sourceHost = _.first(sHost.split(':'));
     targetHost = _.first(tHost.split(':'));
     sourcePort = Number(_.last(sHost.split(':'))) || 28015;

@@ -18,18 +18,18 @@ HELPTEXT = """
                 thinker clone -h | --help
 
               Options:
-                --sh, --sHost=<host[:port]>     Source host, defaults to 'localhost:21015'
-                --th, --tHost=<host[:port]>     Target host, defaults to 'localhost:21015'
-                --sd, --sourceDB=<dbName>       Source database
-                --td, --targetDB=<dbName>       Target database
+                --sh, --sourceHost=<host[:port]>  Source host, defaults to 'localhost:21015'
+                --th, --targetHost=<host[:port]>  Target host, defaults to 'localhost:21015'
+                --sd, --sourceDB=<dbName>         Source database
+                --td, --targetDB=<dbName>         Target database
 
             """
 
 # Some notes --> process.stdout.write(" RECORDS INSERTED: Total = #{records_processed} | Per Second = #{rps} | Percent Complete = %#{pc}          \r");
 
 exports.run = (argv, done) ->
-  sHost = argv.sh ?= if argv.sHost then argv.sHost else 'localhost:28015'
-  tHost = argv.th ?= if argv.tHost then argv.tHost else 'localhost:28015'
+  sHost = argv.sh ?= if argv.sourceHost then argv.sourceHost else 'localhost:28015'
+  tHost = argv.th ?= if argv.targetHost then argv.targetHost else 'localhost:28015'
   sourceHost = _.first(sHost.split(':'))
   targetHost = _.first(tHost.split(':'))
   sourcePort = Number(_.last(sHost.split(':'))) or 28015
