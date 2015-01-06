@@ -13,15 +13,25 @@ Yep. But I plan on adding other tools that I and the community find useful.
 
 ###How do I use it?
 ````bash
-thinker clone [options]
-thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
-thinker clone -h | --help
+  Thinker Clone
+  ==============================
 
-Options:
---sh, --sHost=<host[:port]>     Source host, defaults to 'localhost:21015'
---th, --tHost=<host[:port]>     Target host, defaults to 'localhost:21015'
---sd, --sourceDB=<dbName>       Source database
---td, --targetDB=<dbName>       Target database
+  Clone a RethinkDB database on the same host or between remote hosts.
+
+  Usage:
+  thinker clone [options]
+  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
+  thinker clone -h | --help
+
+  Options:
+  --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
+  --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'
+  --sd, --sourceDB=<dbName>           Source database
+  --td, --targetDB=<dbName>           Target database
+
+  --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)
+  --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
+                                      Note: '--pt' and '--ot' are mutually exclusive options.
 ````
 
 ###How do I get it?

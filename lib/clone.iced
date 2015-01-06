@@ -24,8 +24,8 @@ HELPTEXT = """
                 --sd, --sourceDB=<dbName>           Source database
                 --td, --targetDB=<dbName>           Target database
 
-                --pt, --pickTables=<table1,table2>  Comma separated list of tables that should be copied (whitelist)
-                --ot, --omitTables=<table1,table2>  Comma separated list of tables that should not be copied (blacklist)
+                --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)
+                --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
                                                     Note: '--pt' and '--ot' are mutually exclusive options.
 
             """
