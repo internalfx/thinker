@@ -26,7 +26,7 @@ HELPTEXT = """
 
                 --pt, --pickTables=<table1,table2>  Comma separated list of tables that should be copied (whitelist)
                 --ot, --omitTables=<table1,table2>  Comma separated list of tables that should not be copied (blacklist)
-              Note: '--pt' and '--ot' are mutually exclusive options.
+                                                    Note: '--pt' and '--ot' are mutually exclusive options.
 
             """
 
