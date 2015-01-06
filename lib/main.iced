@@ -21,10 +21,11 @@ HELPTEXT = """
 exports.run = (argv) ->
   command = _.first(argv['_'])
   argv['_'] = argv['_'].slice(1)
+  console.log argv['_']
   switch command
     when "clone"
-      require('./clone').run(argv, ()->
-        process.exit()
-      )
+      await require('./clone').run(argv, defer())
     else
       console.log HELPTEXT
+
+  process.exit()

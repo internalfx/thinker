@@ -18,14 +18,16 @@ HELPTEXT = """
                 thinker clone -h | --help
 
               Options:
-                --sh, --sourceHost=<host[:port]>  Source host, defaults to 'localhost:21015'
-                --th, --targetHost=<host[:port]>  Target host, defaults to 'localhost:21015'
-                --sd, --sourceDB=<dbName>         Source database
-                --td, --targetDB=<dbName>         Target database
+                --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
+                --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'
+                --sd, --sourceDB=<dbName>           Source database
+                --td, --targetDB=<dbName>           Target database
+
+                --pt, --pickTables=<table1,table2>  Comma separated list of tables that should be copied (whitelist)
+                --ot, --omitTables=<table1,table2>  Comma separated list of tables that should not be copied (blacklist)
+              Note: '--pt' and '--ot' are mutually exclusive options.
 
             """
-
-# Some notes --> process.stdout.write(" RECORDS INSERTED: Total = #{records_processed} | Per Second = #{rps} | Percent Complete = %#{pc}          \r");
 
 exports.run = (argv, done) ->
   sHost = argv.sh ?= if argv.sourceHost then argv.sourceHost else 'localhost:28015'
@@ -39,16 +41,16 @@ exports.run = (argv, done) ->
 
   if argv.h or argv.help
     console.log HELPTEXT
-    return null
+    return done()
 
   unless sourceDB? and targetDB?
     console.log "Source and target databases are required!"
     console.log HELPTEXT
-    return null
+    return done()
 
   if "#{sourceHost}:#{sourcePort}" is "#{targetHost}:#{targetPort}" and sourceDB is targetDB
     console.log "Source and target databases must be different if cloning on same server!"
-    return null
+    return done()
 
   await
     inquirer.prompt([{
@@ -56,7 +58,7 @@ exports.run = (argv, done) ->
       name: 'confirmed'
       message: """Ready to clone!
         The database '#{sourceDB}' on '#{sourceHost}:#{sourcePort}' will be cloned to the '#{targetDB}' database on '#{targetHost}:#{targetPort}'
-        This will destroy all data in the '#{targetDB}' database on '#{targetHost}:#{targetPort}' if it exists!
+        This will destroy(drop & create) the '#{targetDB}' database on '#{targetHost}:#{targetPort}' if it exists!
         Proceed?
       """
       default: false
@@ -64,20 +66,22 @@ exports.run = (argv, done) ->
 
   unless answer.confirmed
     console.log "ABORT!"
-    return null
+    return done()
+
+  # Verify source database
+  await r.connect({host: sourceHost, port: sourcePort}, defer(err, conn))
+  await r.dbList().run(conn, defer(err, dbList))
+  await conn.close(defer(err, result))
+  unless _.contains(dbList, sourceDB)
+    console.log "Source DB does not exist!"
+    return done()
+
 
   directClone = "#{sourceHost}:#{sourcePort}" is "#{targetHost}:#{targetPort}"
 
   if directClone # Direct clone method
     console.log "Source RethinkDB Server is same as target. Cloning locally on server(this is faster)."
     await r.connect({host: sourceHost, port: sourcePort}, defer(err, conn))
-
-    # Verify source database
-    await r.dbList().run(conn, defer(err, dbList))
-    unless _.contains(dbList, sourceDB)
-      console.log "Source DB does not exist!"
-      await conn.close(defer(err, result))
-      return null
 
     await r.dbDrop(targetDB).run(conn, defer(err, result))
     await r.dbCreate(targetDB).run(conn, defer(err, result))
@@ -136,20 +140,13 @@ exports.run = (argv, done) ->
     console.log "DONE!"
     await conn.close(defer(err, result))
 
+    return done()
+
   else # Remote clone method
     console.log "Source and target databases are on different servers. Cloning over network."
     await
       r.connect({host: sourceHost, port: sourcePort}, defer(err, sourceConn))
       r.connect({host: targetHost, port: targetPort}, defer(err, targetConn))
-
-    # Verify source database
-    await r.dbList().run(sourceConn, defer(err, dbList))
-    unless _.contains(dbList, sourceDB)
-      console.log "Source DB does not exist!"
-      await
-        sourceConn.close(defer(err, result))
-        targetConn.close(defer(err, result))
-      return null
 
     await r.dbDrop(targetDB).run(targetConn, defer(err, result))
     await r.dbCreate(targetDB).run(targetConn, defer(err, result))
@@ -259,7 +256,7 @@ exports.run = (argv, done) ->
           await tableConns[key].close(defer(err, result))
         console.log "\n"
         console.log "DONE!"
-        done()
+        return done()
 
     insert_queue.suturate = ->
       console.log "SATURATED"
