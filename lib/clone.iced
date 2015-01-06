@@ -4,6 +4,7 @@ r = require('rethinkdb')
 async = require('async')
 perfNow = require("performance-now")
 inquirer = require("inquirer")
+colors = require('colors')
 
 HELPTEXT = """
 
@@ -38,9 +39,18 @@ exports.run = (argv, done) ->
   targetPort = Number(_.last(tHost.split(':'))) or 28015
   sourceDB = argv.sd ?= if argv.sourceDB then argv.sourceDB else null
   targetDB = argv.td ?= if argv.targetDB then argv.targetDB else null
+  pickTables = argv.pt ?= if argv.pickTables then argv.pickTables else null
+  omitTables = argv.ot ?= if argv.omitTables then argv.omitTables else null
+
+  pickTables = pickTables.split(',') if pickTables?
+  omitTables = omitTables.split(',') if omitTables?
 
   if argv.h or argv.help
     console.log HELPTEXT
+    return done()
+
+  if pickTables? and omitTables?
+    console.log "pickTables and omitTables are mutually exclusive options."
     return done()
 
   unless sourceDB? and targetDB?
@@ -52,44 +62,69 @@ exports.run = (argv, done) ->
     console.log "Source and target databases must be different if cloning on same server!"
     return done()
 
-  await
-    inquirer.prompt([{
-      type: 'confirm'
-      name: 'confirmed'
-      message: """Ready to clone!
-        The database '#{sourceDB}' on '#{sourceHost}:#{sourcePort}' will be cloned to the '#{targetDB}' database on '#{targetHost}:#{targetPort}'
-        This will destroy(drop & create) the '#{targetDB}' database on '#{targetHost}:#{targetPort}' if it exists!
-        Proceed?
-      """
-      default: false
-    }], defer(answer))
-
-  unless answer.confirmed
-    console.log "ABORT!"
-    return done()
-
   # Verify source database
   await r.connect({host: sourceHost, port: sourcePort}, defer(err, conn))
+  # get dbList
   await r.dbList().run(conn, defer(err, dbList))
+  # get sourceTableList
+  await r.db(sourceDB).tableList().run(conn, defer(err, sourceTableList))
   await conn.close(defer(err, result))
   unless _.contains(dbList, sourceDB)
     console.log "Source DB does not exist!"
     return done()
 
+  if pickTables? and !_.every(pickTables, (table)-> _.contains(sourceTableList, table))
+    console.log colors.red("Not all the tables specified in --pickTables exist!")
+    return done()
+
+  if omitTables? and !_.every(omitTables, (table)-> _.contains(sourceTableList, table))
+    console.log colors.red("Not all the tables specified in --omitTables exist!")
+    return done()
 
   directClone = "#{sourceHost}:#{sourcePort}" is "#{targetHost}:#{targetPort}"
 
+  await
+    confMessage = """#{colors.green("Ready to clone!")}
+      The database '#{colors.yellow("#{sourceDB}")}' on '#{colors.yellow("#{sourceHost}")}:#{colors.yellow("#{sourcePort}")}' will be cloned to the '#{colors.yellow("#{targetDB}")}' database on '#{colors.yellow("#{targetHost}")}:#{colors.yellow("#{targetPort}")}'
+      This will destroy(drop & create) the '#{colors.yellow("#{targetDB}")}' database on '#{colors.yellow("#{targetHost}")}:#{colors.yellow("#{targetPort}")}' if it exists!\n"""
+    if pickTables?
+      confMessage += "ONLY the following tables will be copied: #{colors.yellow("#{pickTables.join(',')}")}\n"
+    if omitTables?
+      confMessage += "The following tables will NOT be copied: #{colors.yellow("#{omitTables.join(',')}")}\n"
+    if directClone
+      confMessage += "Source RethinkDB Server is same as target. Cloning locally on server(this is faster)."
+    else
+      confMessage += "Source and target databases are on different servers. Cloning over network."
+
+    console.log confMessage
+    inquirer.prompt([{
+      type: 'confirm'
+      name: 'confirmed'
+      message: "Proceed?"
+      default: false
+    }], defer(answer))
+
+  unless answer.confirmed
+    console.log colors.red("ABORT!")
+    return done()
+
+  if pickTables?
+    tablesToCopyList = pickTables
+  else if omitTables?
+    tablesToCopyList = _.difference(sourceTableList, omitTables)
+  else
+    tablesToCopyList = sourceTableList
+
+
   if directClone # Direct clone method
-    console.log "Source RethinkDB Server is same as target. Cloning locally on server(this is faster)."
     await r.connect({host: sourceHost, port: sourcePort}, defer(err, conn))
 
     await r.dbDrop(targetDB).run(conn, defer(err, result))
     await r.dbCreate(targetDB).run(conn, defer(err, result))
 
-    await r.db(sourceDB).tableList().run(conn, defer(err, sourceTableList))
     console.log "===== CREATE TABLES..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb) ->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
@@ -102,7 +137,7 @@ exports.run = (argv, done) ->
 
     console.log "===== SYNC SECONDARY INDEXES..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb)->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
@@ -123,7 +158,7 @@ exports.run = (argv, done) ->
 
     console.log "===== CLONE DATA..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb)->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
@@ -143,7 +178,6 @@ exports.run = (argv, done) ->
     return done()
 
   else # Remote clone method
-    console.log "Source and target databases are on different servers. Cloning over network."
     await
       r.connect({host: sourceHost, port: sourcePort}, defer(err, sourceConn))
       r.connect({host: targetHost, port: targetPort}, defer(err, targetConn))
@@ -151,15 +185,13 @@ exports.run = (argv, done) ->
     await r.dbDrop(targetDB).run(targetConn, defer(err, result))
     await r.dbCreate(targetDB).run(targetConn, defer(err, result))
 
-    await r.db(sourceDB).tableList().run(sourceConn, defer(err, sourceTableList))
-
     await
       sourceConn.close(defer(err, result))
       targetConn.close(defer(err, result))
 
     console.log "===== CREATE TABLES..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb) ->
           table = tname
           await
@@ -178,7 +210,7 @@ exports.run = (argv, done) ->
 
     console.log "===== SYNC SECONDARY INDEXES..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb)->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, sourcelocalconn))
@@ -214,7 +246,7 @@ exports.run = (argv, done) ->
 
     console.log "===== INSPECT SOURCE DATABASE..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb)->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
@@ -249,8 +281,8 @@ exports.run = (argv, done) ->
     setTimeout(check_queue, status_interval)
 
     insert_queue.drain = ->
-      sourceTableList = _.uniq(sourceTableList)
-      if completed_tables.length >= sourceTableList.length
+      completed_tables = _.uniq(completed_tables)
+      if completed_tables.length >= tablesToCopyList.length
         #close all cursor connections
         for key in _.keys(tableConns)
           await tableConns[key].close(defer(err, result))
@@ -263,7 +295,7 @@ exports.run = (argv, done) ->
 
     console.log "===== OPEN CURSORS"
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb)->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, tableConns[table]))
@@ -273,7 +305,7 @@ exports.run = (argv, done) ->
 
     console.log "===== CLONE DATA..."
     await
-      for tname in sourceTableList
+      for tname in tablesToCopyList
         ((cb)->
           table = tname
           table_done = false

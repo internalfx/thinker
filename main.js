@@ -18,7 +18,6 @@
     ___iced_passed_deferral = iced.findDeferral(arguments);
     command = _.first(argv['_']);
     argv['_'] = argv['_'].slice(1);
-    console.log(argv['_']);
     (function(_this) {
       return (function(__iced_k) {
         switch (command) {
@@ -30,7 +29,7 @@
                 funcname: "run"
               });
               require('./clone').run(argv, __iced_deferrals.defer({
-                lineno: 26
+                lineno: 25
               }));
               __iced_deferrals._fulfill();
             })(__iced_k);
