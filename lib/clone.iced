@@ -89,7 +89,8 @@ exports.run = (argv, done) ->
         ((cb) ->
           table = tname
           await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
-          await r.db(targetDB).tableCreate(table).run(localconn, defer(err, result))
+          await r.db(sourceDB).table(table).info()('primary_key').run(localconn, defer(err, primaryKey))
+          await r.db(targetDB).tableCreate(table, {primaryKey: primaryKey}).run(localconn, defer(err, result))
           await localconn.close(defer(err, result))
           console.log "CREATED #{table}"
           cb()
@@ -164,9 +165,16 @@ exports.run = (argv, done) ->
       for tname in sourceTableList
         ((cb) ->
           table = tname
-          await r.connect({host: targetHost, port: targetPort}, defer(err, localconn))
-          await r.db(targetDB).tableCreate(table).run(localconn, defer(err, result))
-          await localconn.close(defer(err, result))
+          await
+            r.connect({host: sourceHost, port: sourcePort}, defer(err, localSourceConn))
+            r.connect({host: targetHost, port: targetPort}, defer(err, localTargetConn))
+
+          await r.db(sourceDB).table(table).info()('primary_key').run(localSourceConn, defer(err, primaryKey))
+          await r.db(targetDB).tableCreate(table, {primaryKey: primaryKey}).run(localTargetConn, defer(err, result))
+
+          await
+            localSourceConn.close(defer(err, result))
+            localTargetConn.close(defer(err, result))
           console.log "CREATED #{table}"
           cb()
         )(defer())
