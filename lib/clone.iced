@@ -269,26 +269,19 @@ exports.run = (argv, done) ->
       ), concurrency
     )
 
-    check_queue = ->
-      perf_stat.unshift(records_processed - last_records_processed)
-      perf_stat.pop() while perf_stat.length > 25
-      rps = (_.reduce(perf_stat, (a, b) -> a + b) / (perf_stat.length*(status_interval/1000))).toFixed(1)
-      pc = ((records_processed / total_records) * 100).toFixed(1)
-      process.stdout.write(" RECORDS INSERTED: Total = #{records_processed} | Per Second = #{rps} | Percent Complete = %#{pc}          \r");
-      last_records_processed = records_processed
-      setTimeout(check_queue, status_interval)
-
-    setTimeout(check_queue, status_interval)
+    isDone = ->
+      return completed_tables.length >= tablesToCopyList.length
 
     insert_queue.drain = ->
       completed_tables = _.uniq(completed_tables)
-      if completed_tables.length >= tablesToCopyList.length
+      if isDone()
+        check_queue()
         #close all cursor connections
         for key in _.keys(tableConns)
           await tableConns[key].close(defer(err, result))
         console.log "\n"
         console.log "DONE!"
-        return done()
+        done()
 
     insert_queue.suturate = ->
       console.log "SATURATED"
@@ -303,7 +296,17 @@ exports.run = (argv, done) ->
           cb()
         )(defer())
 
+    check_queue = ->
+      perf_stat.unshift(records_processed - last_records_processed)
+      perf_stat.pop() while perf_stat.length > 40
+      rps = (_.reduce(perf_stat, (a, b) -> a + b) / (perf_stat.length*(status_interval/1000))).toFixed(1)
+      pc = ((records_processed / total_records) * 100).toFixed(1)
+      process.stdout.write(" RECORDS INSERTED: Total = #{records_processed} | Per Second = #{rps} | Percent Complete = %#{pc}          \r");
+      last_records_processed = records_processed
+      setTimeout(check_queue, status_interval) unless isDone()
+
     console.log "===== CLONE DATA..."
+    check_queue()
     await
       for tname in tablesToCopyList
         ((cb)->

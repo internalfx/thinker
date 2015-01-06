@@ -16,10 +16,10 @@
 
   colors = require('colors');
 
-  HELPTEXT = "\nThinker Clone\n==============================\n\nClone a RethinkDB database on the same host or between remote hosts.\n\nUsage:\n  thinker clone [options]\n  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName\n  thinker clone -h | --help\n\nOptions:\n  --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'\n  --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'\n  --sd, --sourceDB=<dbName>           Source database\n  --td, --targetDB=<dbName>           Target database\n\n  --pt, --pickTables=<table1,table2>  Comma separated list of tables that should be copied (whitelist)\n  --ot, --omitTables=<table1,table2>  Comma separated list of tables that should not be copied (blacklist)\n                                      Note: '--pt' and '--ot' are mutually exclusive options.\n";
+  HELPTEXT = "\nThinker Clone\n==============================\n\nClone a RethinkDB database on the same host or between remote hosts.\n\nUsage:\n  thinker clone [options]\n  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName\n  thinker clone -h | --help\n\nOptions:\n  --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'\n  --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'\n  --sd, --sourceDB=<dbName>           Source database\n  --td, --targetDB=<dbName>           Target database\n\n  --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)\n  --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)\n                                      Note: '--pt' and '--ot' are mutually exclusive options.\n";
 
   exports.run = function(argv, done) {
-    var answer, check_queue, completed_tables, concurrency, confMessage, conn, cursors, dbList, directClone, err, insert_queue, last_records_processed, omitTables, perf_stat, pickTables, queue_ready, records_processed, result, sHost, sourceConn, sourceDB, sourceHost, sourcePort, sourceTableList, status_interval, tHost, tableConns, tablesToCopyList, targetConn, targetDB, targetHost, targetPort, tname, total_records, ___iced_passed_deferral, __iced_deferrals, __iced_k;
+    var answer, check_queue, completed_tables, concurrency, confMessage, conn, cursors, dbList, directClone, err, insert_queue, isDone, last_records_processed, omitTables, perf_stat, pickTables, queue_ready, records_processed, result, sHost, sourceConn, sourceDB, sourceHost, sourcePort, sourceTableList, status_interval, tHost, tableConns, tablesToCopyList, targetConn, targetDB, targetHost, targetPort, tname, total_records, ___iced_passed_deferral, __iced_deferrals, __iced_k;
     __iced_k = __iced_k_noop;
     ___iced_passed_deferral = iced.findDeferral(arguments);
     sHost = argv.sh != null ? argv.sh : argv.sh = argv.sourceHost ? argv.sourceHost : 'localhost:28015';
@@ -1160,27 +1160,16 @@
                                     };
                                   })(this));
                                 }), concurrency);
-                                check_queue = function() {
-                                  var pc, rps;
-                                  perf_stat.unshift(records_processed - last_records_processed);
-                                  while (perf_stat.length > 25) {
-                                    perf_stat.pop();
-                                  }
-                                  rps = (_.reduce(perf_stat, function(a, b) {
-                                    return a + b;
-                                  }) / (perf_stat.length * (status_interval / 1000))).toFixed(1);
-                                  pc = ((records_processed / total_records) * 100).toFixed(1);
-                                  process.stdout.write(" RECORDS INSERTED: Total = " + records_processed + " | Per Second = " + rps + " | Percent Complete = %" + pc + "          \r");
-                                  last_records_processed = records_processed;
-                                  return setTimeout(check_queue, status_interval);
+                                isDone = function() {
+                                  return completed_tables.length >= tablesToCopyList.length;
                                 };
-                                setTimeout(check_queue, status_interval);
                                 insert_queue.drain = function() {
                                   var err, key, result, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                                   __iced_k = __iced_k_noop;
                                   ___iced_passed_deferral1 = iced.findDeferral(arguments);
                                   completed_tables = _.uniq(completed_tables);
-                                  if (completed_tables.length >= tablesToCopyList.length) {
+                                  if (isDone()) {
+                                    check_queue();
                                     (function(_this) {
                                       return (function(__iced_k) {
                                         var _i, _len, _ref, _results, _while;
@@ -1220,7 +1209,7 @@
                                                     return result = arguments[1];
                                                   };
                                                 })(),
-                                                lineno: 287
+                                                lineno: 280
                                               }));
                                               __iced_deferrals._fulfill();
                                             })(_next);
@@ -1232,8 +1221,7 @@
                                       return function() {
                                         console.log("\n");
                                         console.log("DONE!");
-                                        return done();
-                                        return __iced_k();
+                                        return __iced_k(done());
                                       };
                                     })(this));
                                   } else {
@@ -1272,7 +1260,7 @@
                                               return __slot_1[__slot_2] = arguments[1];
                                             };
                                           })(tableConns, table),
-                                          lineno: 300
+                                          lineno: 293
                                         }));
                                         __iced_deferrals._fulfill();
                                       });
@@ -1290,7 +1278,7 @@
                                                 return __slot_1[__slot_2] = arguments[1];
                                               };
                                             })(cursors, table),
-                                            lineno: 301
+                                            lineno: 294
                                           }));
                                           __iced_deferrals._fulfill();
                                         })(function() {
@@ -1302,12 +1290,29 @@
                                   for (_i = 0, _len = tablesToCopyList.length; _i < _len; _i++) {
                                     tname = tablesToCopyList[_i];
                                     _fn(__iced_deferrals.defer({
-                                      lineno: 303
+                                      lineno: 296
                                     }));
                                   }
                                   __iced_deferrals._fulfill();
                                 })(function() {
+                                  check_queue = function() {
+                                    var pc, rps;
+                                    perf_stat.unshift(records_processed - last_records_processed);
+                                    while (perf_stat.length > 40) {
+                                      perf_stat.pop();
+                                    }
+                                    rps = (_.reduce(perf_stat, function(a, b) {
+                                      return a + b;
+                                    }) / (perf_stat.length * (status_interval / 1000))).toFixed(1);
+                                    pc = ((records_processed / total_records) * 100).toFixed(1);
+                                    process.stdout.write(" RECORDS INSERTED: Total = " + records_processed + " | Per Second = " + rps + " | Percent Complete = %" + pc + "          \r");
+                                    last_records_processed = records_processed;
+                                    if (!isDone()) {
+                                      return setTimeout(check_queue, status_interval);
+                                    }
+                                  };
                                   console.log("===== CLONE DATA...");
+                                  check_queue();
                                   (function(__iced_k) {
                                     var _fn, _i, _len;
                                     __iced_deferrals = new iced.Deferrals(__iced_k, {
@@ -1375,7 +1380,7 @@
                                                             return row = arguments[1];
                                                           };
                                                         })(),
-                                                        lineno: 315
+                                                        lineno: 318
                                                       }));
                                                       __iced_deferrals._fulfill();
                                                     })(function() {
@@ -1413,7 +1418,7 @@ _break()
                                     for (_i = 0, _len = tablesToCopyList.length; _i < _len; _i++) {
                                       tname = tablesToCopyList[_i];
                                       _fn(__iced_deferrals.defer({
-                                        lineno: 326
+                                        lineno: 329
                                       }));
                                     }
                                     __iced_deferrals._fulfill();
