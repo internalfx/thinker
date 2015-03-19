@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 _ = require('lodash')
-VERSION = "0.3.1"
+VERSION = "0.4.0"
 main = require("../main");
 argv = require('minimist')(process.argv.slice(2));
 main.run(argv);
