@@ -1,6 +1,5 @@
 
 _ = require('lodash')
-r = require('rethinkdb')
 perfNow = require("performance-now")
 
 HELPTEXT = """

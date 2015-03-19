@@ -1,6 +1,5 @@
 
 _ = require('lodash')
-r = require('rethinkdb')
 async = require('async')
 perfNow = require("performance-now")
 inquirer = require("inquirer")
@@ -63,12 +62,11 @@ exports.run = (argv, done) ->
     return done()
 
   # Verify source database
-  await r.connect({host: sourceHost, port: sourcePort}, defer(err, conn))
+  r = require('rethinkdbdash')(host: sourceHost, port: sourcePort)
   # get dbList
-  await r.dbList().run(conn, defer(err, dbList))
+  await r.dbList().run(defer(err, dbList))
   # get sourceTableList
-  await r.db(sourceDB).tableList().run(conn, defer(err, sourceTableList))
-  await conn.close(defer(err, result))
+  await r.db(sourceDB).tableList().run(defer(err, sourceTableList))
   unless _.contains(dbList, sourceDB)
     console.log "Source DB does not exist!"
     return done()
@@ -117,20 +115,17 @@ exports.run = (argv, done) ->
 
 
   if directClone # Direct clone method
-    await r.connect({host: sourceHost, port: sourcePort}, defer(err, conn))
 
-    await r.dbDrop(targetDB).run(conn, defer(err, result))
-    await r.dbCreate(targetDB).run(conn, defer(err, result))
+    await r.dbDrop(targetDB).run(defer(err, result))
+    await r.dbCreate(targetDB).run(defer(err, result))
 
     console.log "===== CREATE TABLES..."
     await
       for tname in tablesToCopyList
         ((cb) ->
           table = tname
-          await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
-          await r.db(sourceDB).table(table).info()('primary_key').run(localconn, defer(err, primaryKey))
-          await r.db(targetDB).tableCreate(table, {primaryKey: primaryKey}).run(localconn, defer(err, result))
-          await localconn.close(defer(err, result))
+          await r.db(sourceDB).table(table).info()('primary_key').run(defer(err, primaryKey))
+          await r.db(targetDB).tableCreate(table, {primaryKey: primaryKey}).run(defer(err, result))
           console.log "CREATED #{table}"
           cb()
         )(defer())
@@ -140,18 +135,16 @@ exports.run = (argv, done) ->
       for tname in tablesToCopyList
         ((cb)->
           table = tname
-          await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
-          await r.db(sourceDB).table(table).indexList().run(localconn, defer(err, sourceIndexes))
+          await r.db(sourceDB).table(table).indexList().run(defer(err, sourceIndexes))
 
           for index in sourceIndexes
-            await r.db(sourceDB).table(table).indexStatus(index).run(localconn, defer(err, index_obj))
+            await r.db(sourceDB).table(table).indexStatus(index).run(defer(err, index_obj))
             index_obj = _.first(index_obj)
             await
               r.db(targetDB).table(table).indexCreate(
                 index_obj.index, index_obj.function, {geo: index_obj.geo, multi: index_obj.multi}
-              ).run(localconn, defer(err, result))
+              ).run(defer(err, result))
 
-          await localconn.close(defer(err, result))
           console.log "INDEXES SYNCED #{table}"
           cb()
         )(defer())
@@ -161,49 +154,36 @@ exports.run = (argv, done) ->
       for tname in tablesToCopyList
         ((cb)->
           table = tname
-          await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
 
           await r.db(targetDB).table(table).insert(
             r.db(sourceDB).table(table)
-          ).run(localconn, defer(err, sourceIndexes))
+          ).run(defer(err, sourceIndexes))
 
-          await localconn.close(defer(err, result))
           console.log "DATA CLONED #{table}"
           cb()
         )(defer())
 
     console.log "DONE!"
-    await conn.close(defer(err, result))
 
     return done()
 
   else # Remote clone method
-    await
-      r.connect({host: sourceHost, port: sourcePort}, defer(err, sourceConn))
-      r.connect({host: targetHost, port: targetPort}, defer(err, targetConn))
 
-    await r.dbDrop(targetDB).run(targetConn, defer(err, result))
-    await r.dbCreate(targetDB).run(targetConn, defer(err, result))
+    sr = require('rethinkdbdash')(host: sourceHost, port: sourcePort)
+    tr = require('rethinkdbdash')(host: targetHost, port: targetPort)
 
-    await
-      sourceConn.close(defer(err, result))
-      targetConn.close(defer(err, result))
+    await tr.dbDrop(targetDB).run(defer(err, result))
+    await tr.dbCreate(targetDB).run(defer(err, result))
 
     console.log "===== CREATE TABLES..."
     await
       for tname in tablesToCopyList
         ((cb) ->
           table = tname
-          await
-            r.connect({host: sourceHost, port: sourcePort}, defer(err, localSourceConn))
-            r.connect({host: targetHost, port: targetPort}, defer(err, localTargetConn))
 
-          await r.db(sourceDB).table(table).info()('primary_key').run(localSourceConn, defer(err, primaryKey))
-          await r.db(targetDB).tableCreate(table, {primaryKey: primaryKey}).run(localTargetConn, defer(err, result))
+          await sr.db(sourceDB).table(table).info()('primary_key').run(defer(err, primaryKey))
+          await tr.db(targetDB).tableCreate(table, {primaryKey: primaryKey}).run(defer(err, result))
 
-          await
-            localSourceConn.close(defer(err, result))
-            localTargetConn.close(defer(err, result))
           console.log "CREATED #{table}"
           cb()
         )(defer())
@@ -213,21 +193,16 @@ exports.run = (argv, done) ->
       for tname in tablesToCopyList
         ((cb)->
           table = tname
-          await r.connect({host: sourceHost, port: sourcePort}, defer(err, sourcelocalconn))
-          await r.connect({host: targetHost, port: targetPort}, defer(err, targetlocalconn))
-          await r.db(sourceDB).table(table).indexList().run(sourcelocalconn, defer(err, sourceIndexes))
+          await sr.db(sourceDB).table(table).indexList().run(defer(err, sourceIndexes))
 
           for index in sourceIndexes
-            await r.db(sourceDB).table(table).indexStatus(index).run(sourcelocalconn, defer(err, index_obj))
+            await sr.db(sourceDB).table(table).indexStatus(index).run(defer(err, index_obj))
             index_obj = _.first(index_obj)
             await
-              r.db(targetDB).table(table).indexCreate(
+              tr.db(targetDB).table(table).indexCreate(
                 index_obj.index, index_obj.function, {geo: index_obj.geo, multi: index_obj.multi}
-              ).run(targetlocalconn, defer(err, result))
+              ).run(defer(err, result))
 
-          await
-            sourcelocalconn.close(defer(err, result))
-            targetlocalconn.close(defer(err, result))
           console.log "INDEXES SYNCED #{table}"
           cb()
         )(defer())
@@ -249,10 +224,8 @@ exports.run = (argv, done) ->
       for tname in tablesToCopyList
         ((cb)->
           table = tname
-          await r.connect({host: sourceHost, port: sourcePort}, defer(err, localconn))
-          await r.db(sourceDB).table(table).count().run(localconn, defer(err, size))
+          await sr.db(sourceDB).table(table).count().run(defer(err, size))
           total_records += size
-          await localconn.close(defer(err, result))
           cb()
         )(defer())
     console.log "#{total_records} records to copy...."
@@ -261,9 +234,7 @@ exports.run = (argv, done) ->
     insert_queue = async.queue(
       (
         (obj, cb)->
-          await r.connect({host: targetHost, port: targetPort}, defer(err, localconn))
-          await r.db(targetDB).table(obj.table).insert(obj.data).run(localconn, {durability: 'soft'}, defer(err, result))
-          await localconn.close(defer(err, result))
+          await tr.db(targetDB).table(obj.table).insert(obj.data).run({durability: 'soft'}, defer(err, result))
           records_processed += obj.data.length
           cb()
       ), concurrency
@@ -276,9 +247,6 @@ exports.run = (argv, done) ->
       completed_tables = _.uniq(completed_tables)
       if isDone()
         check_queue()
-        #close all cursor connections
-        for key in _.keys(tableConns)
-          await tableConns[key].close(defer(err, result))
         console.log "\n"
         console.log "DONE!"
         done()
@@ -291,8 +259,7 @@ exports.run = (argv, done) ->
       for tname in tablesToCopyList
         ((cb)->
           table = tname
-          await r.connect({host: sourceHost, port: sourcePort}, defer(err, tableConns[table]))
-          await r.db(sourceDB).table(table).run(tableConns[table], defer(err, cursors[table]))
+          await sr.db(sourceDB).table(table).run({cursor: true}, defer(err, cursors[table]))
           cb()
         )(defer())
 
