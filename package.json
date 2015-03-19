@@ -36,14 +36,15 @@
     "test": "mocha -R test"
   },
   "dependencies": {
-    "minimist": "~1.1.0",
-    "verbalize": "~0.1.1",
-    "rethinkdb": "~1.15.0",
-    "lodash": "~2.4.0",
     "async": "~0.9.0",
+    "colors": "1.x",
+    "iced-runtime": "1.x",
     "inquirer": "~0.8.0",
-    "iced-runtime": "~1.0.2",
-    "colors": "~1.0.3"
+    "lodash": "3.x",
+    "minimist": "~1.1.0",
+    "performance-now": "^0.2.0",
+    "rethinkdbdash": "1.x",
+    "verbalize": "~0.1.1"
   },
   "devDependencies": {
     "grunt-iced-coffee": "~0.7.0"
