@@ -812,7 +812,7 @@
                               funcname: "run"
                             });
                             _fn = function(cb) {
-                              var buffer, err, row, table, table_done, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                              var buffer, err, row, start, table, table_done, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                               __iced_k = __iced_k_noop;
                               ___iced_passed_deferral1 = iced.findDeferral(arguments);
                               table = tname;
@@ -838,6 +838,7 @@
                                     if (!!table_done) {
                                       return _break();
                                     } else {
+                                      start = Date.now();
                                       buffer = [];
                                       (function(__iced_k) {
                                         var _results1, _while;
@@ -856,7 +857,7 @@
                                             _results1.push(__iced_next_arg);
                                             return _continue();
                                           };
-                                          if (!(buffer.length < 200)) {
+                                          if (!(buffer.length < 200 && (Date.now() - start) < 1000)) {
                                             return _break();
                                           } else {
                                             (function(__iced_k) {
@@ -871,7 +872,7 @@
                                                     return row = arguments[1];
                                                   };
                                                 })(),
-                                                lineno: 284
+                                                lineno: 285
                                               }));
                                               __iced_deferrals._fulfill();
                                             })(function() {
@@ -909,7 +910,7 @@ _break()
                             for (_i = 0, _len = tablesToCopyList.length; _i < _len; _i++) {
                               tname = tablesToCopyList[_i];
                               _fn(__iced_deferrals.defer({
-                                lineno: 295
+                                lineno: 296
                               }));
                             }
                             __iced_deferrals._fulfill();

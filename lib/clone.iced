@@ -280,8 +280,9 @@ exports.run = (argv, done) ->
           table_done = false
 
           until table_done
+            start = Date.now()
             buffer = []
-            while buffer.length < 200
+            while buffer.length < 200 and (Date.now() - start) < 1000
               await cursors[table].next(defer(err, row))
               if err
                 table_done = true
