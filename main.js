@@ -1,12 +1,10 @@
 (function() {
-  var HELPTEXT, iced, perfNow, _, __iced_k, __iced_k_noop;
+  var HELPTEXT, iced, _, __iced_k, __iced_k_noop;
 
   iced = require('iced-runtime');
   __iced_k = __iced_k_noop = function() {};
 
   _ = require('lodash');
-
-  perfNow = require("performance-now");
 
   HELPTEXT = "\nThinker " + VERSION + "\n==============================\n\nA RethinkDB command line tool.\n\nCommands:\n  thinker clone           Clone a database locally or between remote hosts.\n  thinker -h | --help     Show this screen.\n";
 
@@ -27,7 +25,7 @@
                 funcname: "run"
               });
               require('./clone').run(argv, __iced_deferrals.defer({
-                lineno: 24
+                lineno: 23
               }));
               __iced_deferrals._fulfill();
             })(__iced_k);

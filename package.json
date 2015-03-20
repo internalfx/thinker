@@ -42,7 +42,6 @@
     "inquirer": "~0.8.0",
     "lodash": "3.x",
     "minimist": "~1.1.0",
-    "performance-now": "^0.2.0",
     "rethinkdbdash": "1.x",
     "verbalize": "~0.1.1"
   },

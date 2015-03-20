@@ -1,7 +1,6 @@
 
 _ = require('lodash')
 async = require('async')
-perfNow = require("performance-now")
 inquirer = require("inquirer")
 colors = require('colors')
 

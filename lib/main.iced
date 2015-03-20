@@ -1,6 +1,5 @@
 
 _ = require('lodash')
-perfNow = require("performance-now")
 
 HELPTEXT = """
 
