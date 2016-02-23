@@ -629,7 +629,7 @@
                                           parent: ___iced_passed_deferral1,
                                           filename: "./lib/clone.iced"
                                         });
-                                        r.db(targetDB).table(table).indexWait().run(__iced_deferrals.defer({
+                                        tr.db(targetDB).table(table).indexWait().run(__iced_deferrals.defer({
                                           assign_fn: (function() {
                                             return function() {
                                               return err = arguments[0];
