@@ -143,6 +143,7 @@ exports.run = (argv, done) ->
               r.db(targetDB).table(table).indexCreate(
                 index_obj.index, index_obj.function, {geo: index_obj.geo, multi: index_obj.multi}
               ).run(defer(err, result))
+            await r.db(targetDB).table(table).indexWait().run(defer(err))
 
           console.log "INDEXES SYNCED #{table}"
           cb()
@@ -201,6 +202,7 @@ exports.run = (argv, done) ->
               tr.db(targetDB).table(table).indexCreate(
                 index_obj.index, index_obj.function, {geo: index_obj.geo, multi: index_obj.multi}
               ).run(defer(err, result))
+            await r.db(targetDB).table(table).indexWait().run(defer(err))
 
           console.log "INDEXES SYNCED #{table}"
           cb()
