@@ -292,22 +292,16 @@
                               _ref = sourceIndexes;
                               _len1 = _ref.length;
                               _j = 0;
-                              _results = [];
                               _while = function(__iced_k) {
                                 var _break, _continue, _next;
-                                _break = function() {
-                                  return __iced_k(_results);
-                                };
+                                _break = __iced_k;
                                 _continue = function() {
                                   return iced.trampoline(function() {
                                     ++_j;
                                     return _while(__iced_k);
                                   });
                                 };
-                                _next = function(__iced_next_arg) {
-                                  _results.push(__iced_next_arg);
-                                  return _continue();
-                                };
+                                _next = _continue;
                                 if (!(_j < _len1)) {
                                   return _break();
                                 } else {
@@ -472,7 +466,7 @@
                       funcname: "run"
                     });
                     _fn = function(cb) {
-                      var err, primaryKey, result, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                      var primaryKey, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                       __iced_k = __iced_k_noop;
                       ___iced_passed_deferral1 = iced.findDeferral(arguments);
                       table = tname;
@@ -536,7 +530,7 @@
                         funcname: "run"
                       });
                       _fn = function(cb) {
-                        var err, index, index_obj, result, sourceIndexes, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                        var index, index_obj, sourceIndexes, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                         __iced_k = __iced_k_noop;
                         ___iced_passed_deferral1 = iced.findDeferral(arguments);
                         table = tname;
@@ -564,22 +558,16 @@
                               _ref = sourceIndexes;
                               _len1 = _ref.length;
                               _j = 0;
-                              _results = [];
                               _while = function(__iced_k) {
                                 var _break, _continue, _next;
-                                _break = function() {
-                                  return __iced_k(_results);
-                                };
+                                _break = __iced_k;
                                 _continue = function() {
                                   return iced.trampoline(function() {
                                     ++_j;
                                     return _while(__iced_k);
                                   });
                                 };
-                                _next = function(__iced_next_arg) {
-                                  _results.push(__iced_next_arg);
-                                  return _continue();
-                                };
+                                _next = _continue;
                                 if (!(_j < _len1)) {
                                   return _break();
                                 } else {
@@ -658,7 +646,7 @@
                           funcname: "run"
                         });
                         _fn = function(cb) {
-                          var err, size, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                          var size, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                           __iced_k = __iced_k_noop;
                           ___iced_passed_deferral1 = iced.findDeferral(arguments);
                           table = tname;
@@ -696,7 +684,7 @@
                       })(function() {
                         console.log("" + total_records + " records to copy....");
                         insert_queue = async.queue((function(obj, cb) {
-                          var err, result, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                          var ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                           __iced_k = __iced_k_noop;
                           ___iced_passed_deferral1 = iced.findDeferral(arguments);
                           (function(_this) {
@@ -749,7 +737,7 @@
                             funcname: "run"
                           });
                           _fn = function(cb) {
-                            var err, table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                            var table, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                             __iced_k = __iced_k_noop;
                             ___iced_passed_deferral1 = iced.findDeferral(arguments);
                             table = tname;
@@ -812,51 +800,39 @@
                               funcname: "run"
                             });
                             _fn = function(cb) {
-                              var buffer, err, row, start, table, table_done, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
+                              var buffer, row, start, table, table_done, ___iced_passed_deferral1, __iced_deferrals, __iced_k;
                               __iced_k = __iced_k_noop;
                               ___iced_passed_deferral1 = iced.findDeferral(arguments);
                               table = tname;
                               table_done = false;
                               (function(_this) {
                                 return (function(__iced_k) {
-                                  var _results, _while;
-                                  _results = [];
+                                  var _while;
                                   _while = function(__iced_k) {
                                     var _break, _continue, _next;
-                                    _break = function() {
-                                      return __iced_k(_results);
-                                    };
+                                    _break = __iced_k;
                                     _continue = function() {
                                       return iced.trampoline(function() {
                                         return _while(__iced_k);
                                       });
                                     };
-                                    _next = function(__iced_next_arg) {
-                                      _results.push(__iced_next_arg);
-                                      return _continue();
-                                    };
+                                    _next = _continue;
                                     if (!!table_done) {
                                       return _break();
                                     } else {
                                       start = Date.now();
                                       buffer = [];
                                       (function(__iced_k) {
-                                        var _results1, _while;
-                                        _results1 = [];
+                                        var _while;
                                         _while = function(__iced_k) {
                                           var _break, _continue, _next;
-                                          _break = function() {
-                                            return __iced_k(_results1);
-                                          };
+                                          _break = __iced_k;
                                           _continue = function() {
                                             return iced.trampoline(function() {
                                               return _while(__iced_k);
                                             });
                                           };
-                                          _next = function(__iced_next_arg) {
-                                            _results1.push(__iced_next_arg);
-                                            return _continue();
-                                          };
+                                          _next = _continue;
                                           if (!(buffer.length < 200 && (Date.now() - start) < 1000)) {
                                             return _break();
                                           } else {

@@ -38,14 +38,16 @@
   "dependencies": {
     "async": "~0.9.0",
     "colors": "1.x",
-    "iced-runtime": "1.x",
+    "grunt": "^0.4.5",
+    "iced-runtime": "^1.0.3",
     "inquirer": "~0.8.0",
-    "lodash": "3.x",
-    "minimist": "~1.1.0",
-    "rethinkdbdash": "1.x",
+    "lodash": "^3.10.1",
+    "minimist": "^1.1.3",
+    "rethinkdbdash": "2.x",
     "verbalize": "~0.1.1"
   },
   "devDependencies": {
+    "iced-coffee-script": "^108.0",
     "grunt-iced-coffee": "~0.7.0"
   }
 }
