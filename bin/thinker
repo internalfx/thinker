@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-_ = require('lodash')
-VERSION = "0.5.2"
-main = require("../main");
-argv = require('minimist')(process.argv.slice(2));
-main.run(argv);
+let pjson = require('../package.json')
+let Promise = require('bluebird')
+global.Promise = Promise
+global.VERSION = pjson.version
+var main = require('../lib/main')
+var argv = require('minimist')(process.argv.slice(2))
+main(argv)

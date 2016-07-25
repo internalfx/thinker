@@ -37,6 +37,8 @@
   },
   "dependencies": {
     "async": "~0.9.0",
+    "bluebird": "^3.4.1",
+    "co": "^4.6.0",
     "colors": "1.x",
     "grunt": "^0.4.5",
     "iced-runtime": "^1.0.3",
