@@ -1,17 +1,17 @@
 Thinker
 =======
 
-###A RethinkDB management tool.
-
+### A RethinkDB management tool.
 A command line tool to ease development and administration.
 
-###Why?
-I have a production app using RethinkDB, and I wanted an easy way to clone the database to another server for development.
+### Installation.
 
-###So all it can do is clone databases?
-Yep. But I plan on adding other tools that I and the community find useful.
+Required nodejs v6+
 
-###How do I use it?
+`npm install -g thinker`
+
+### Documentation
+
 ````bash
   Thinker Clone
   ==============================
@@ -33,6 +33,3 @@ Yep. But I plan on adding other tools that I and the community find useful.
   --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
                                       Note: '--pt' and '--ot' are mutually exclusive options.
 ````
-
-###How do I get it?
-`npm install -g thinker`
