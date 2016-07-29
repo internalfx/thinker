@@ -2,6 +2,7 @@ Thinker
 =======
 
 ### A RethinkDB management tool.
+
 A command line tool to ease development and administration.
 
 ### Installation.
@@ -10,26 +11,70 @@ Required nodejs v6+
 
 `npm install -g thinker`
 
-### Documentation
+## Documentation
 
-````bash
+### Clone a RethinkDB database.
+
+```bash
   Thinker Clone
   ==============================
 
   Clone a RethinkDB database on the same host or between remote hosts.
 
   Usage:
-  thinker clone [options]
-  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
-  thinker clone -h | --help
+    thinker clone [options]
+    thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
+    thinker clone -h | --help
 
   Options:
-  --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
-  --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'
-  --sd, --sourceDB=<dbName>           Source database
-  --td, --targetDB=<dbName>           Target database
+    --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
+    --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'
+    --sd, --sourceDB=<dbName>           Source database
+    --td, --targetDB=<dbName>           Target database
 
-  --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)
-  --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
-                                      Note: '--pt' and '--ot' are mutually exclusive options.
-````
+    --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)
+    --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
+                                        Note: '--pt' and '--ot' are mutually exclusive options.
+
+    --user                              Source and Target username
+    --password                          Source and Target password
+
+    --su                                Source username, overrides --user
+    --sp                                Source password, overrides --password
+
+    --tu                                Target username, overrides --user
+    --tp                                Target password, overrides --password
+```
+
+### Synchronize two RethinkDB databases.
+
+```bash
+Thinker Sync
+  ==============================
+
+  Sync two RethinkDB databases.
+
+  Usage:
+    thinker sync [options]
+    thinker sync --sh host[:port] --th host[:port] --sd dbName --td dbName
+    thinker sync -h | --help
+
+  Options:
+    --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
+    --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'
+    --sd, --sourceDB=<dbName>           Source database
+    --td, --targetDB=<dbName>           Target database
+
+    --pt, --pickTables=<table1,table2>  Comma separated list of tables to sync (whitelist)
+    --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
+                                        Note: '--pt' and '--ot' are mutually exclusive options.
+
+    --user                              Source and Target username
+    --password                          Source and Target password
+
+    --su                                Source username, overrides --user
+    --sp                                Source password, overrides --password
+
+    --tu                                Target username, overrides --user
+    --tp                                Target password, overrides --password
+```
