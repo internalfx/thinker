@@ -40,7 +40,7 @@
   "devDependencies": {},
   "standard": {
     "ignore": [
-      "/lib/md5.js"
+      "/lib/hash.js"
     ]
   }
 }
