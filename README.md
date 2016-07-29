@@ -1,7 +1,8 @@
-Thinker
-=======
+# Thinker
 
 ### A RethinkDB management tool.
+
+[![npm version](https://img.shields.io/npm/v/thinker.svg)](https://www.npmjs.com/package/thinker) [![license](https://img.shields.io/npm/l/thinker.svg)](https://github.com/internalfx/thinker/blob/master/LICENSE)
 
 A command line tool to ease development and administration.
 
