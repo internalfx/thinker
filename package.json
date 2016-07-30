@@ -1,7 +1,7 @@
 {
   "name": "thinker",
   "description": "A RethinkDB management tool",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "homepage": "https://github.com/internalfx/thinker",
   "author": "InternalFX",
   "repository": {
