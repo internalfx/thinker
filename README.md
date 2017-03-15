@@ -12,7 +12,7 @@ _Doesn't RethinkDB already have `dump` and `restore` commands for handling this?
 
 Thinker's `clone` command can dump and restore in one step (even to remote databases). `clone` can also target a different database on the same server.
 
-The `sync` command is different entirely, `sync` runs a hashing function on the tables in both databases and only modifies the data that is different, saving tons and bandwidth and time. For example, I regularly update a local copy of a production database for development. The database is 20GB in size, I can `sync` the changes over a ~25mb link in about 20 minutes.
+The `sync` command is different entirely, `sync` runs a hashing function on the tables in both databases and only modifies the data that is different, saving tons of bandwidth and time. For example, I regularly update a local copy of a production database for development. The database is 20GB in size, I can `sync` the changes over a ~25mb link in about 20 minutes.
 
 ---
 
