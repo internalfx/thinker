@@ -98,4 +98,14 @@ Options:
 
   --tu                                Target username, overrides --user
   --tp                                Target password, overrides --password
+
+  --silent, --s                             Skip interactive approval
+
+  --c, --companyIds=<id1,id2>               Uses seconary ids to filter Company Secondary Index from what is synced
+```
+
+To copy specific tables by specific company ids you would do the following:
+
+```
+./bin/thinker sync --sh <FROM> --th <TO> --sd gather --td gather --c sa0oiol9,phbq3484 --s --pt accounts,bookings,charges,comments,contacts,locations,logins,messages,policies,rooms,templates,users
 ```
