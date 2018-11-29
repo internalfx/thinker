@@ -25,17 +25,17 @@
     "test": "echo 'no tests yet'"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "co": "^4.6.0",
-    "co-parallel": "^1.0.0",
-    "colors": "^1.1.2",
-    "inquirer": "^1.1.2",
-    "lodash": "^4.14.0",
-    "minimist": "^1.2.0",
-    "moment": "^2.14.1",
-    "require-all": "^2.0.0",
-    "rethinkdbdash": "^2.3.19",
-    "verbalize": "^0.2.0"
+    "bluebird": "3.5.3",
+    "co": "4.6.0",
+    "co-parallel": "1.0.0",
+    "colors": "1.1.2",
+    "inquirer": "1.1.2",
+    "lodash": "4.14.0",
+    "minimist": "1.2.0",
+    "moment": "2.14.1",
+    "require-all": "2.0.0",
+    "rethinkdbdash": "2.3.31",
+    "verbalize": "0.2.0"
   },
   "devDependencies": {},
   "standard": {
