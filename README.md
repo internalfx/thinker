@@ -108,7 +108,7 @@ Options:
 Thinker Sync
 ==============================
 
-Sync two RethinkDB databases.
+Sync two RethinkDB databases (without deleting target records).
 
 Usage:
   thinker syncinc [options]
