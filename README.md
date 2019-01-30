@@ -102,7 +102,7 @@ Options:
 
 ### Synchronize two RethinkDB databases without deleting target records that already exist.
 
-`thinker sync` Synchronizes tables, indexes and data from the source database to the target database. The target database is modified to match the source but no records from target are deleted.
+`thinker syncinc` Synchronizes tables, indexes and data from the source database to the target database. The target database is modified to match the source but no records from target are deleted.
 
 ```bash
 Thinker Sync
