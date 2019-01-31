@@ -1,2 +1,3 @@
 node_modules
 ignored_files
+package-lock.json

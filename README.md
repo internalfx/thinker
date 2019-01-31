@@ -99,3 +99,38 @@ Options:
   --tu                                Target username, overrides --user
   --tp                                Target password, overrides --password
 ```
+
+### Synchronize two RethinkDB databases without deleting target records that already exist.
+
+`thinker syncinc` Synchronizes tables, indexes and data from the source database to the target database. The target database is modified to match the source but no records from target are deleted.
+
+```bash
+Thinker Sync
+==============================
+
+Sync two RethinkDB databases (without deleting target records).
+
+Usage:
+  thinker syncinc [options]
+  thinker syncinc --sh host[:port] --th host[:port] --sd dbName --td dbName
+  thinker syncinc -h | --help
+
+Options:
+  --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
+  --th, --targetHost=<host[:port]>    Target host, defaults to 'localhost:21015'
+  --sd, --sourceDB=<dbName>           Source database
+  --td, --targetDB=<dbName>           Target database
+
+  --pt, --pickTables=<table1,table2>  Comma separated list of tables to sync (whitelist)
+  --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
+                                      Note: '--pt' and '--ot' are mutually exclusive options.
+
+  --user                              Source and Target username
+  --password                          Source and Target password
+
+  --su                                Source username, overrides --user
+  --sp                                Source password, overrides --password
+
+  --tu                                Target username, overrides --user
+  --tp                                Target password, overrides --password
+```
