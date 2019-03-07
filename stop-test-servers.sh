@@ -1,4 +1,4 @@
-docker stop rethinkdb-thinker1
-docker stop rethinkdb-thinker2
-docker rm rethinkdb-thinker1
-docker rm rethinkdb-thinker2
+docker stop rethinkdb-thinksync1
+docker stop rethinkdb-thinksync2
+docker rm rethinkdb-thinksync1
+docker rm rethinkdb-thinksync2
