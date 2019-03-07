@@ -4,5 +4,7 @@ let Promise = require('bluebird')
 global.Promise = Promise
 global.VERSION = pjson.version
 var main = require('../lib/main')
-var argv = require('minimist')(process.argv.slice(2))
+var argv = require('minimist')(process.argv.slice(2), {
+  boolean: ['ixo', 'indexOnly'],
+});
 main(argv)
