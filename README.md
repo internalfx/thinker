@@ -1,18 +1,25 @@
-# Thinker
+# ThinkSyThinkSync
 
 ### A RethinkDB management tool.
 
-[![npm version](https://img.shields.io/npm/v/thinker.svg)](https://www.npmjs.com/package/thinker) [![license](https://img.shields.io/npm/l/thinker.svg)](https://github.com/internalfx/thinker/blob/master/LICENSE)
+[![npm version](https://img.shields.io/npm/v/thinksync.svg)](https://www.npmjs.com/package/thinksync) [![license](https://img.shields.io/npm/l/thinksync.svg)](https://github.com/internalfx/thinksync/blob/master/LICENSE)
 
 A command line tool to ease development and administration.
+
+This is a fork of Thinker for RethinkDB, with one extra feature: The `--ixo`
+flag (or `--indexOnly`) causes `thinksync` to only synchronize indexes, ignoring
+table data.
+
+One other change is that the `sync` command is not the default command, so you
+don't have to pass it.
 
 ### FAQ
 
 _Doesn't RethinkDB already have `dump` and `restore` commands for handling this?_
 
-Thinker's `clone` command can dump and restore in one step (even to remote databases). `clone` can also target a different database on the same server.
+The default `sync` command runs a hashing function on the tables in both databases and only modifies the data that is different, saving tons of bandwidth and time. For example, I regularly update a local copy of a production database for development. The database is 20GB in size, I can `sync` the changes over a ~25mb link in about 20 minutes.
 
-The `sync` command is different entirely, `sync` runs a hashing function on the tables in both databases and only modifies the data that is different, saving tons of bandwidth and time. For example, I regularly update a local copy of a production database for development. The database is 20GB in size, I can `sync` the changes over a ~25mb link in about 20 minutes.
+ThinkSync's `clone` command can dump and restore in one step (even to remote databases). `clone` can also target a different database on the same server.
 
 ---
 
@@ -26,24 +33,24 @@ Arthur Andrew Medical manufactures products with ingredients that have extensive
 
 Required nodejs v6+
 
-`npm install -g thinker`
+`npm install -g thinksync`
 
 ## Documentation
 
-### Clone a RethinkDB database.
+### Synchronize two RethinkDB databases.
 
-`thinker clone` directly copies tables, indexes and data from the source database to the target database. The target database is dropped and recreated.
+`thinksync` Synchronizes tables, indexes and data from the source database to the target database. The target database is modified to match the source.
 
 ```bash
-Thinker Clone
+ThinkSync
 ==============================
 
-Clone a RethinkDB database on the same host or between remote hosts.
+Sync two RethinkDB databases.
 
 Usage:
-  thinker clone [options]
-  thinker clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
-  thinker clone -h | --help
+  thinksync [sync] [options]
+  thinksync [sync] --sh host[:port] --th host[:port] --sd dbName --td dbName
+  thinksync [sync] -h | --help
 
 Options:
   --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
@@ -51,9 +58,10 @@ Options:
   --sd, --sourceDB=<dbName>           Source database
   --td, --targetDB=<dbName>           Target database
 
-  --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)
+  --pt, --pickTables=<table1,table2>  Comma separated list of tables to sync (whitelist)
   --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
                                       Note: '--pt' and '--ot' are mutually exclusive options.
+  --ixo, --indexOnly                  Only sync table indexes, not data.
 
   --user                              Source and Target username
   --password                          Source and Target password
@@ -65,20 +73,20 @@ Options:
   --tp                                Target password, overrides --password
 ```
 
-### Synchronize two RethinkDB databases.
+### Clone a RethinkDB database.
 
-`thinker sync` Synchronizes tables, indexes and data from the source database to the target database. The target database is modified to match the source.
+`thinksync clone` directly copies tables, indexes and data from the source database to the target database. The target database is dropped and recreated.
 
 ```bash
-Thinker Sync
+ThinkSync Clone
 ==============================
 
-Sync two RethinkDB databases.
+Clone a RethinkDB database on the same host or between remote hosts.
 
 Usage:
-  thinker sync [options]
-  thinker sync --sh host[:port] --th host[:port] --sd dbName --td dbName
-  thinker sync -h | --help
+  thinksync clone [options]
+  thinksync clone --sh host[:port] --th host[:port] --sd dbName --td newDbName
+  thinksync clone -h | --help
 
 Options:
   --sh, --sourceHost=<host[:port]>    Source host, defaults to 'localhost:21015'
@@ -86,7 +94,7 @@ Options:
   --sd, --sourceDB=<dbName>           Source database
   --td, --targetDB=<dbName>           Target database
 
-  --pt, --pickTables=<table1,table2>  Comma separated list of tables to sync (whitelist)
+  --pt, --pickTables=<table1,table2>  Comma separated list of tables to copy (whitelist)
   --ot, --omitTables=<table1,table2>  Comma separated list of tables to ignore (blacklist)
                                       Note: '--pt' and '--ot' are mutually exclusive options.
 
