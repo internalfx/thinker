@@ -1,0 +1,15 @@
+{
+  "name": "changefeeds",
+  "version": "1.0.0",
+  "description": "",
+  "main": "changefeed.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.3",
+    "rethinkdbdash": "^2.3.31"
+  }
+}
