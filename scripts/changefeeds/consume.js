@@ -12,6 +12,7 @@ async function consumer(msg) {
     
     if (data.type === "add" && data.new_val) {
         try {
+            logToDisk(data.new_val.id)
             await r.table("files").insert(data.new_val).run();
             conn.ack(msg);
         } catch(e) {
@@ -19,6 +20,7 @@ async function consumer(msg) {
         }
     } else if (data.type === "change" && data.new_val) {
         try {
+            logToDisk(data.new_val.id)
             await r.table("files").get(data.new_val.id).replace(data.new_val).run();
             conn.ack(msg);
         } catch(e) {
@@ -26,11 +28,20 @@ async function consumer(msg) {
         }
     } else if (data.type === "remove" && !data.new_val) {
         try {
+            logToDisk(data.old_val.id)
             await r.table("files").get(data.old_val.id).delete().run();
             conn.ack(msg);
         } catch(e) {
             conn.nack(msg, undefined, false)  // nack({ requeue: false })
         }
+    }
+}
+
+function logToDisk(id) {
+    try {
+        fs.appendFileSync("./consumer.log", id + "\n")
+    } catch(e) {
+        console.log(`Error write ID to disk - ${id}`)
     }
 }
 
