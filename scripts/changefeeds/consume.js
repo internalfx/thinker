@@ -4,19 +4,22 @@ const r = require("rethinkdbdash")({
 const { getConn } = require("./queue_manager");
 
 async function consumer(msg) {
+    const conn = await getConn();
     const data = JSON.parse(msg.content);
     
     if (data.type === "change" || (data.type === "add" && data.new_val)) {
         try {
             await r.table("files").insert(data.new_val);
+            conn.ack(msg);
         } catch(e) {
-            channel.nack(msg, undefined, false)  // nack({ requeue: false })
+            conn.nack(msg, undefined, false)  // nack({ requeue: false })
         }
     } else if (data.type === "remove" && !data.new_val) {
         try {
             await r.table("files").get(data.old_val.id).delete();
+            conn.ack(msg);
         } catch(e) {
-            channel.nack(msg, undefined, false)  // nack({ requeue: false })
+            conn.nack(msg, undefined, false)  // nack({ requeue: false })
         }
     }
 }
