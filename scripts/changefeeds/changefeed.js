@@ -1,4 +1,5 @@
-const { setup, publish } = require("./publish");
+const { publish } = require("./publish");
+const { setup } = require("./queue_manager");
 const r = require("rethinkdbdash")({
     db: "gather"
 });
