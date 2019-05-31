@@ -12,21 +12,21 @@ async function consumer(msg) {
     
     if (data.type === "add" && data.new_val) {
         try {
-            await r.table("files").insert(data.new_val);
+            await r.table("files").insert(data.new_val).run();
             conn.ack(msg);
         } catch(e) {
             conn.nack(msg, undefined, false)  // nack({ requeue: false })
         }
-    } else if (data.type === "change") {
+    } else if (data.type === "change" && data.new_val) {
         try {
-            await r.table("files").replace(data.new_val);
+            await r.table("files").get(data.new_val.id).replace(data.new_val).run();
             conn.ack(msg);
         } catch(e) {
             conn.nack(msg, undefined, false)  // nack({ requeue: false })
         }
     } else if (data.type === "remove" && !data.new_val) {
         try {
-            await r.table("files").get(data.old_val.id).delete();
+            await r.table("files").get(data.old_val.id).delete().run();
             conn.ack(msg);
         } catch(e) {
             conn.nack(msg, undefined, false)  // nack({ requeue: false })
