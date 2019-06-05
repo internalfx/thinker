@@ -14,10 +14,8 @@ async function consumer(msg) {
     if (data.type === "add" && data.new_val) {
         try {
             await r.table("files").insert(data.new_val).run();
-            console.log("add suceed")
             conn.ack(msg);
         } catch(e) {
-            console.log("add fail")
             conn.nack(msg, undefined, false)  // nack({ requeue: false })
         }
     } else if (data.type === "change" && data.new_val) {

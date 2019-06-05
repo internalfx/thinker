@@ -6,6 +6,13 @@ async function getConn() {
     
     const rabbit = await amqp.connect(process.env.RABBITMQ_URL || "amqp://localhost");
     ch = await rabbit.createChannel();
+    
+    // DELETE ME AFTER USING
+    const q1DLQ = `changes.files_changes.dead`;
+    await ch.assertExchange("changes.dead", "fanout");
+    await ch.assertQueue(q1DLQ);
+    await ch.bindQueue(q1DLQ, "changes.dead");
+
     return ch;
 }
 
@@ -25,7 +32,7 @@ module.exports = {
 
         // SETUP DEAD QUEUES
         const q1DLQ = `changes.${queue}.dead`;
-        await conn.assertExchange("changes.dead", "direct");
+        await conn.assertExchange("changes.dead", "fanout");
         await conn.assertQueue(q1DLQ);
         await conn.bindQueue(q1DLQ, "changes.dead");
 
