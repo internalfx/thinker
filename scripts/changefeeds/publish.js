@@ -6,13 +6,14 @@ module.exports = {
         try {
             const conn = await getConn();
             conn.publish("changes", queue, Buffer.from(JSON.stringify(msg)), {
-                contentType: "application/json"
+                contentType: "application/json",
+                persistent: true
             });
         } catch (e) {
             console.log("Change not publish, logging...");
-            fs.appendFile("./error.log", JSON.stringify(msg) + "\n", (err) => {
+            fs.appendFile("./error.log", JSON.stringify(msg) + "\n", err => {
                 if (err) console.log(err);
-                console.error(e)
+                console.error(e);
             });
         }
     }
