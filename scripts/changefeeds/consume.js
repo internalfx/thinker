@@ -5,7 +5,7 @@ const r = require("rethinkdbdash")({
 const { getConn } = require("./queue_manager");
 
 const QUEUE = "changes.files_changes";
-const RETHINKDB_TABLE = "files";
+const RETHINKDB_TABLE = "messages";
 
 async function consumer(msg) {
     const conn = await getConn();
